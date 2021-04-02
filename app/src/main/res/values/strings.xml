@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">SpareRoomApp</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="empty_statement">No upcoming events are scheduled. If this is incorrect, get in touch with our CORE team.</string>
+<!--
+    <string name="error">We couldn't load the upcoming events. Check your cellular or wifi connection and try again</string>
+-->
+</resources>

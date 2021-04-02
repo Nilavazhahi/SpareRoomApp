@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#262626</color>
+    <color name="colorPrimaryDark">#111111</color>
+    <color name="colorAccent">#03DAC5</color>
+
+    <color name="tab_text_color">#bdbdbd</color>
+    <color name="selected_tab_text_color">#14c8f6</color>
+    <color name="tab_indicator_color">#14c8f6</color>
+    <color name="background_color">#111111</color>
+    <color name="button_bg_color">#14c8f6</color>
+    <color name="atom_block_bg_color">#333333</color>
+    <color name="component_bg_color">#222222</color>
+    <color name="component_border_color">#333333</color>
+
+
+
+    <color name="alabaster">#f7f7f7</color>
+    <color name="black">#000000</color>
+    <color name="bright_turquoise">#14c8f6</color>
+    <color name="cod_grey">#111111</color>
+    <color name="dusty_grey">#999999</color>
+    <color name="mercury">#e3e3e3</color>
+    <color name="mineshaft">#262626</color>
+    <color name="pizazz">#ff9600</color>
+    <color name="silver">#bdbdbd</color>
+    <color name="translucent_black_72">#b8000000</color>
+    <color name="translucent_white_72">#b8ffffff</color>
+    <color name="tuatara">#222222</color>
+    <color name="tuna">#333333</color>
+    <color name="white">#ffffff</color>
+    <color name="astronaut_blue">#003d5d</color>
+    <color name="orient">#005480</color>
+    <color name="translucent_white_48">#7affffff</color>
+
+</resources>
