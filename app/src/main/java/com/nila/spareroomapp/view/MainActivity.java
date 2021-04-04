@@ -6,47 +6,29 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 import com.nila.spareroomapp.R;
-import com.nila.spareroomapp.model.UpcomingModel;
-import com.nila.spareroomapp.viewmodel.ListUpcomingViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Context context;
     public static int REQUEST_PERMISSION=1;
 
 
-    //@BindView(R.id.toolbar)
-    private Toolbar toolbar;
+    @BindView(R.id.toolbar)
+    public Toolbar toolbar;
 
     @BindView(R.id.roomtablayout)
     public TabLayout tabLayout;
@@ -83,8 +65,6 @@ public class MainActivity extends AppCompatActivity {
                     0);
         }
 
-        toolbar = findViewById(R.id.toolbar);
-
         ButterKnife.bind(this);
 
         if(getSupportActionBar() == null) {
@@ -107,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
 
-        highLightCurrentTab(0); // for initial selected tab view
+        highLightCurrentTab(0);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

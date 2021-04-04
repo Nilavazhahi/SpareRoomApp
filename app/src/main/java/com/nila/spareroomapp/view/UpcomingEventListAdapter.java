@@ -2,50 +2,47 @@
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nila.spareroomapp.R;
+import com.nila.spareroomapp.model.DateList;
+import com.nila.spareroomapp.model.DetailList;
+import com.nila.spareroomapp.model.UpcomingList;
 import com.nila.spareroomapp.model.UpcomingModel;
-
-import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class UpcomingEventListAdapter extends RecyclerView.Adapter<UpcomingEventListAdapter.UpcomingViewHolder> {
+public class UpcomingEventListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<UpcomingModel> upcomingEvents;
+    private List<UpcomingList> upcomingEvents;
+    private Context context;
 
 
-    public UpcomingEventListAdapter(List<UpcomingModel> upcomingEvents){
+    public UpcomingEventListAdapter(List<UpcomingList> upcomingEvents){
         this.upcomingEvents = upcomingEvents;
     }
 
-    public void updateUpcomingEvents(List<UpcomingModel> newUpcomingEvents){
+    public void updateUpcomingEvents(List<UpcomingList> newUpcomingEvents){
         upcomingEvents.clear();
         upcomingEvents.addAll(newUpcomingEvents);
         notifyDataSetChanged();
@@ -53,24 +50,80 @@ public class UpcomingEventListAdapter extends RecyclerView.Adapter<UpcomingEvent
 
     @NonNull
     @Override
-    public UpcomingViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.upcoming_list, parent,false);
-        return new UpcomingViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder viewHolder = null;
+        context = parent.getContext();
+
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
+        switch (viewType) {
+
+            case UpcomingList.TYPE_GENERAL:
+                View v1 = inflater.inflate(R.layout.upcoming_list, parent,
+                        false);
+                viewHolder = new GeneralViewHolder(v1);
+                break;
+
+            case UpcomingList.TYPE_DATE:
+                View v2 = inflater.inflate(R.layout.upcoming_date_list, parent, false);
+                viewHolder = new DateViewHolder(v2);
+                break;
+        }
+        return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull UpcomingViewHolder holder, int position) {
-        if(upcomingEvents.get(position)!=null)
-        holder.bind(upcomingEvents.get(position));
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+
+       switch (holder.getItemViewType()) {
+
+            case UpcomingList.TYPE_GENERAL:
+
+                DetailList generalItem   = (DetailList) upcomingEvents.get(position);
+                GeneralViewHolder generalViewHolder= (GeneralViewHolder) holder;
+                generalViewHolder.bind(generalItem.getUpcomingModel());
+
+                break;
+
+            case UpcomingList.TYPE_DATE:
+
+                DateList dateItem = (DateList) upcomingEvents.get(position);
+                DateViewHolder dateViewHolder = (DateViewHolder) holder;
+
+                dateViewHolder.dateHeader.setText(dateItem.getDate());
+                if(position>0)
+                    dateViewHolder.dividerView.setVisibility(View.VISIBLE);
+
+                break;
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return upcomingEvents.get(position).getType();
     }
 
     @Override
     public int getItemCount() {
-        return upcomingEvents.size();
+        return upcomingEvents != null ? upcomingEvents.size() : 0;
     }
 
 
-    class UpcomingViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    // ViewHolder for date row item
+    class DateViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.date_header)
+        TextView dateHeader;
+        @BindView(R.id.divider_view)
+        View dividerView;
+
+        public DateViewHolder(View v) {
+            super(v);
+            ButterKnife.bind(this,v);
+        }
+    }
+
+    // View holder for general row item
+    class GeneralViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.event_image)
         ImageView eventImage;
 
@@ -89,19 +142,43 @@ public class UpcomingEventListAdapter extends RecyclerView.Adapter<UpcomingEvent
         @BindView(R.id.event_cost)
         TextView eventCost;
 
-        @BindView(R.id.month_header)
-        TextView monthHeader;
+        @BindView(R.id.card_view)
+        CardView cardView;
 
+        public GeneralViewHolder(View v) {
+            super(v);
+            ButterKnife.bind(this, v);
 
-        public UpcomingViewHolder(@NonNull View itemView) {
-            super(itemView);
-            itemView.setOnClickListener(this);
-            ButterKnife.bind(this, itemView);
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int callPermissionCheck = ContextCompat.checkSelfPermission(v.getContext(), android.Manifest.permission.CALL_PHONE);
+
+                    if (callPermissionCheck != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(
+                                (Activity) v.getContext(),
+                                new String[]{Manifest.permission.CALL_PHONE},
+                                0);
+                    }else {
+                        int pos = getLayoutPosition();
+                        DetailList generalItem   = (DetailList) upcomingEvents.get(pos);
+                        String phoneNo = generalItem.getUpcomingModel().getPhone_number();
+
+                        if (phoneNo != null) {
+
+                            Intent intent = new Intent(Intent.ACTION_CALL);
+                            intent.setData(Uri.parse("tel:" + phoneNo));
+                            v.getContext().startActivity(intent);
+                        }
+                    }
+                }
+            });
         }
 
         void bind(UpcomingModel upcomingModel){
 
-            if(upcomingModel.getImage_url()!=null && upcomingModel.getImage_url()!="") {
+            if(upcomingModel.getImage_url()!=null && upcomingModel.getImage_url()!="" && upcomingModel.getStart_time()!=null && upcomingModel.getEnd_time()!=null
+                    && upcomingModel.getStart_time()!="" && upcomingModel.getEnd_time()!="") {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
 
                 SimpleDateFormat dateFormatter = new SimpleDateFormat("MMMM-dd");
@@ -148,28 +225,6 @@ public class UpcomingEventListAdapter extends RecyclerView.Adapter<UpcomingEvent
 
         }
 
-        @Override
-        public void onClick(View v) {
-            int callPermissionCheck = ContextCompat.checkSelfPermission(v.getContext(), android.Manifest.permission.CALL_PHONE);
-
-            if (callPermissionCheck != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(
-                        (Activity) v.getContext(),
-                        new String[]{Manifest.permission.CALL_PHONE},
-                        0);
-            }else {
-                int pos = getLayoutPosition();
-                String phoneNo = upcomingEvents.get(pos).getPhone_number();
-                if (phoneNo != null) {
-                    String phone = "+44 7466887291";
-                    Intent intent = new Intent(Intent.ACTION_CALL);
-                    intent.setData(Uri.parse("tel:" + phone));
-                    v.getContext().startActivity(intent);
-                }
-            }
-
-
-        }
 
     }
 

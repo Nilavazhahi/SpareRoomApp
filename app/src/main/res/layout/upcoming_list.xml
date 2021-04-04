@@ -9,19 +9,10 @@
     android:layout_marginTop="16dp"
     android:layout_marginLeft="12dp"
     android:layout_marginRight="12dp"
+    android:id="@+id/card_view"
+    android:foreground="?attr/selectableItemBackgroundBorderless"
     >
-    <TextView
-        android:id="@+id/month_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="tst"
-        android:layout_gravity="top"/>
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/month_header"
-        >
 
     <ImageView
         android:id="@+id/event_image"
@@ -29,15 +20,12 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         />
-    </RelativeLayout>
 
 <RelativeLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="12dp"
     android:background="@drawable/bg_rounded"
-    android:layout_below="@+id/month_header"
-
     >
     <TextView
         android:id="@+id/event_cost"

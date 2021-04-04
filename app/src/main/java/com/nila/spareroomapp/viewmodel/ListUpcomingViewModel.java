@@ -1,7 +1,5 @@
 package com.nila.spareroomapp.viewmodel;
 
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -9,9 +7,6 @@ import com.nila.spareroomapp.di.DaggerApiComponent;
 import com.nila.spareroomapp.model.UpcomingEventService;
 import com.nila.spareroomapp.model.UpcomingModel;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,7 +20,7 @@ import io.reactivex.schedulers.Schedulers;
 public class ListUpcomingViewModel extends ViewModel {
 
     public MutableLiveData<List<UpcomingModel>> upcomingEvents = new MutableLiveData<List<UpcomingModel>>();
-    public MutableLiveData<Boolean> countryLoadError = new MutableLiveData<Boolean>();
+    public MutableLiveData<Boolean> loadError = new MutableLiveData<Boolean>();
     public MutableLiveData<Boolean> loading = new MutableLiveData<Boolean>();
 
     @Inject
@@ -57,20 +52,20 @@ public class ListUpcomingViewModel extends ViewModel {
                                 Iterator<UpcomingModel> iter = upcomingModels.iterator();
                                 while (iter.hasNext()) {
                                     UpcomingModel upcomingModel = iter.next();
-                                    if (upcomingModel.getImage_url()==null)
+                                    if (upcomingModel.getImage_url()==null || upcomingModel.getStart_time()==null || upcomingModel.getEnd_time()==null)
                                         iter.remove();
 
                                 }
 
                                 upcomingEvents.setValue(upcomingModels);
                                 loading.setValue(false);
-                                countryLoadError.setValue(false);
+                                loadError.setValue(false);
                             }
 
                             @Override
                             public void onError(Throwable e) {
                                 loading.setValue(false);
-                                countryLoadError.setValue(true);
+                                loadError.setValue(true);
                                 e.printStackTrace();
 
                             }

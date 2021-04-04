@@ -12,6 +12,7 @@
     <color name="atom_block_bg_color">#e3e3e3</color>
     <color name="component_bg_color">#f7f7f7</color>
     <color name="component_border_color">#e3e3e3</color>
+    <color name="divider_color">#e3e3e3</color>
 
 
     <color name="alabaster">#f7f7f7</color>

@@ -14,17 +14,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:liftOnScroll="true">
+        >
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             style="@style/HeaderLeftWhite"
-            app:layout_scrollFlags="scroll|enterAlways|snap"
-            app:layout_collapseMode="pin"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:titleTextColor="@color/white"
             />
 
 
@@ -40,7 +39,6 @@
             app:tabTextColor="@color/tab_text_color"
             app:tabSelectedTextColor="@color/selected_tab_text_color"
             app:tabMode="fixed"
-            app:layout_scrollFlags="scroll|enterAlways|snap"
             />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -53,6 +51,5 @@
         app:layout_constraintTop_toBottomOf="@+id/appbar"
         android:clipToPadding="false"
         />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

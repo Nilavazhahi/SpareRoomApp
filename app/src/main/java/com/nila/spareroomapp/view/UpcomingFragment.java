@@ -21,6 +21,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nila.spareroomapp.R;
+import com.nila.spareroomapp.model.DateList;
+import com.nila.spareroomapp.model.DetailList;
+import com.nila.spareroomapp.model.UpcomingList;
 import com.nila.spareroomapp.model.UpcomingModel;
 import com.nila.spareroomapp.viewmodel.ListUpcomingViewModel;
 
@@ -30,9 +33,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import butterknife.BindView;
@@ -42,7 +47,6 @@ public class UpcomingFragment extends Fragment {
 
     private Context context;
 
-    //@BindView(R.id.upcomingEventList)
     RecyclerView upcomingEventList;
 
     LinearLayout loadingLayout;
@@ -51,10 +55,9 @@ public class UpcomingFragment extends Fragment {
     LinearLayout noConnectionLayout;
     Button offlineRetryBtn, errorRetryBtn;
 
-
     private ListUpcomingViewModel listViewModel;
     private UpcomingEventListAdapter upcomingEventListAdapter = new UpcomingEventListAdapter(new ArrayList<>());
-
+    List<UpcomingList> upcomingConsolidatedList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -152,11 +155,27 @@ public class UpcomingFragment extends Fragment {
                                 return um1.getStart_time().compareTo(um2.getStart_time());
                             else
                                 return 0;
-
                         }
                     });
+
+                    TreeMap<String, List<UpcomingModel>> groupedTreeMap = groupDataIntoHashMap(upcomingModels);
+
+
+                    for (String date : groupedTreeMap.keySet()) {
+                        DateList dateItem = new DateList();
+                        dateItem.setDate(date);
+                        upcomingConsolidatedList.add(dateItem);
+
+
+                        for (UpcomingModel upcomingModel : groupedTreeMap.get(date)) {
+                            DetailList detailListItem = new DetailList();
+                            detailListItem.setUpcomingModel(upcomingModel);
+                            upcomingConsolidatedList.add(detailListItem);
+                        }
+                    }
+
                     upcomingEventList.setVisibility(View.VISIBLE);
-                    upcomingEventListAdapter.updateUpcomingEvents(upcomingModels);
+                    upcomingEventListAdapter.updateUpcomingEvents(upcomingConsolidatedList);
                 }else{
                     emptyLayout.setVisibility(View.VISIBLE);
                     loadingLayout.setVisibility(View.VISIBLE);
@@ -165,7 +184,7 @@ public class UpcomingFragment extends Fragment {
             }
         });
 
-        listViewModel.countryLoadError.observe(this, new Observer<Boolean>() {
+        listViewModel.loadError.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean isError) {
                 if(isError !=null){
@@ -196,4 +215,49 @@ public class UpcomingFragment extends Fragment {
             }
         });
     }
+
+    private TreeMap<String, List<UpcomingModel>> groupDataIntoHashMap(List<UpcomingModel> listOfUpcomingModel) {
+
+        TreeMap<String, List<UpcomingModel>> groupedTreeMap = new TreeMap<>();
+
+        for (UpcomingModel upcomingModel : listOfUpcomingModel) {
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
+
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("MMMM");
+
+            Date startDate = null;
+            try {
+                startDate = dateFormat.parse(upcomingModel.getStart_time());
+
+                String date = dateFormatter.format(startDate);
+                if (date.endsWith("01") && !date.endsWith("11"))
+                    dateFormatter = new SimpleDateFormat("MMMM");
+
+                else if (date.endsWith("02") && !date.endsWith("12"))
+                    dateFormatter = new SimpleDateFormat("MMMM");
+
+                else if (date.endsWith("03") && !date.endsWith("13"))
+                    dateFormatter = new SimpleDateFormat("MMMM");
+
+                else
+                    dateFormatter = new SimpleDateFormat("MMMM");
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            String hashMapKey = dateFormatter.format(startDate);
+
+            if (groupedTreeMap.containsKey(hashMapKey)) {
+                groupedTreeMap.get(hashMapKey).add(upcomingModel);
+            } else {
+                List<UpcomingModel> list = new ArrayList<>();
+                list.add(upcomingModel);
+                groupedTreeMap.put(hashMapKey, list);
+            }
+        }
+
+        return groupedTreeMap;
+    }
+
 }

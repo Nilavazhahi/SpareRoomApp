@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -33,6 +33,13 @@
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">16sp</item>
         <item name="android:lineSpacingExtra">8sp</item>
+        <item name="android:textColor">@color/dusty_grey</item>
+    </style>
+
+    <style name="SubheaderLeftTextStyle">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/dusty_grey</item>
     </style>
 
