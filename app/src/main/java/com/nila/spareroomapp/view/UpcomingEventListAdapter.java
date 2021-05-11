@@ -1,10 +1,7 @@
  package com.nila.spareroomapp.view;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nila.spareroomapp.R;
@@ -152,25 +147,16 @@ public class UpcomingEventListAdapter extends RecyclerView.Adapter<RecyclerView.
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int callPermissionCheck = ContextCompat.checkSelfPermission(v.getContext(), android.Manifest.permission.CALL_PHONE);
-
-                    if (callPermissionCheck != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(
-                                (Activity) v.getContext(),
-                                new String[]{Manifest.permission.CALL_PHONE},
-                                0);
-                    }else {
                         int pos = getLayoutPosition();
                         DetailList generalItem   = (DetailList) upcomingEvents.get(pos);
                         String phoneNo = generalItem.getUpcomingModel().getPhone_number();
 
                         if (phoneNo != null) {
 
-                            Intent intent = new Intent(Intent.ACTION_CALL);
+                            Intent intent = new Intent(Intent.ACTION_DIAL);
                             intent.setData(Uri.parse("tel:" + phoneNo));
                             v.getContext().startActivity(intent);
                         }
-                    }
                 }
             });
         }
