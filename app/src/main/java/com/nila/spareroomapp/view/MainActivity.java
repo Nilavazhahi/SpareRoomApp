@@ -24,9 +24,6 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static int REQUEST_PERMISSION=1;
-
-
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
 
@@ -36,8 +33,6 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.viewPager)
     public ViewPager viewPager;
     private RoomTabAdapter adapter;
-
-    int callPermissionCheck;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,15 +50,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_main);
-
-        callPermissionCheck = ContextCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE);
-
-        if (callPermissionCheck != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    new String[]{Manifest.permission.CALL_PHONE},
-                    0);
-        }
 
         ButterKnife.bind(this);
 
@@ -115,26 +101,4 @@ public class MainActivity extends AppCompatActivity {
         tab.setCustomView(adapter.getSelectedTabView(position));
     }
 
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,  String[] permissions,  int[] grantResults) {
-        if (requestCode == REQUEST_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            } else {
-                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-
-                alertDialogBuilder.setTitle("Roommating");
-                alertDialogBuilder.setMessage("Please enable Telephone permission to make phone call")
-                        .setCancelable(false)
-                        .setPositiveButton("OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                    }
-                                });
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
-            }
-        }
-    }
 }
